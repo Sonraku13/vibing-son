@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "PocketBeat",
+  "name": "vibing son",
   "version": "1.2.0",
   "description": "Search, play, queue, and sing along to YouTube Music songs right from your toolbar, without opening a tab.",
   "homepage_url": "https://github.com/muhamadsyahrulmubarok/pocketbeat",
@@ -16,7 +16,7 @@
     "service_worker": "background/service-worker.js"
   },
   "action": {
-    "default_title": "PocketBeat",
+    "default_title": "vibing son",
     "default_popup": "popup/popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
