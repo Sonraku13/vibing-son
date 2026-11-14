@@ -1,4 +1,4 @@
-/* global Romanize */
+/* global Romanize, parsePlaylistId */
 // PocketBeat - popup UI
 // The popup is only a remote control: playback runs in the offscreen document,
 // so music keeps playing after the popup closes, with no YouTube Music tab.
@@ -333,6 +333,25 @@ async function runSearch() {
   $("tab-results").hidden = false;
   lastContentTab = "results";
   showTab("results");
+
+  const playlistId = typeof parsePlaylistId === "function" ? parsePlaylistId(query) : null;
+  if (playlistId) {
+    search.kind = "playlists";
+    document.querySelectorAll(".seg-btn").forEach((b) => b.setAttribute("aria-checked", String(b.dataset.kind === "playlists")));
+    resultsEl.replaceChildren(emptyItem("Resolving playlist..."));
+    const res = await sw({ type: "RESOLVE_PLAYLIST", playlistId });
+    if (seq !== search.seq) return;
+    resultsEl.replaceChildren();
+    if (!res?.ok || !res.playlist) {
+      resultsEl.appendChild(
+        emptyItem(res?.error || "Playlist tidak ditemukan atau bersifat privat. Pastikan playlist disetel ke Publik atau Unlisted.")
+      );
+      return;
+    }
+    resultsEl.appendChild(playlistResultRow(res.playlist));
+    return;
+  }
+
   resultsEl.replaceChildren(emptyItem(`Searching ${kind} for "${query}"...`));
 
   const res = await sw({ type: kind === "playlists" ? "SEARCH_PLAYLISTS" : "SEARCH", query });
