@@ -14,9 +14,14 @@ Pengguna ingin menambahkan atau memutar playlist YouTube / YouTube Music langsun
 - Tidak mem-bypass batasan `MAX_PLAYLIST_TRACKS` (tetap batas maksimal 200 lagu per playlist lokal).
 - Tidak mengubah format penyimpanan data playlist yang sudah ada di `chrome.storage.local`.
 
-## Constraints
+## Constraints & Playlist Visibility
 - No API Key: Memanfaatkan endpoint internal YouTube Music `browse` (`VL<playlistId>`) yang sudah ada di extension.
 - Validasi playlist ID menggunakan regex standar `^[A-Za-z0-9_-]{10,64}$`.
+- **Visibilitas Playlist**:
+  - Playlist **Publik** atau **Unlisted** (tidak publik tapi punya link langsung) dapat diakses tanpa login.
+  - Playlist **Private** membutuhkan cookie login akun pemilik dan tidak dapat diakses secara anonim oleh PocketBeat.
+  - **Error Handling**: Jika playlist private, tidak ditemukan, atau tidak memiliki lagu yang dapat diputar, tampilkan pesan error yang jelas dan ramah:
+    `"Playlist tidak ditemukan atau bersifat privat. Pastikan playlist disetel ke Publik atau Unlisted."`
 
 ## Approaches Considered
 1. **Auto-detect di Search Bar (Dipilih)**:
