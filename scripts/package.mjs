@@ -1,6 +1,6 @@
 // Builds the extension packages from the same source files:
-//   dist/pocketbeat-<version>.zip          Chrome, Edge, and other Chromium browsers
-//   dist/pocketbeat-<version>-firefox.zip  Firefox (only manifest.json differs)
+//   dist/vibing-son-<version>.zip          Chrome, Edge, and other Chromium browsers
+//   dist/vibing-son-<version>-firefox.zip  Firefox (only manifest.json differs)
 // Dependency-free: a minimal ZIP writer on top of node:zlib.
 import fs from "node:fs";
 import path from "node:path";
@@ -104,8 +104,8 @@ const files = INCLUDE.flatMap(listFiles).map((name) => ({ name, data: fs.readFil
 const manifestEntry = (m) => ({ name: "manifest.json", data: Buffer.from(JSON.stringify(m, null, 2) + "\n") });
 
 const builds = [
-  [`pocketbeat-${manifest.version}.zip`, manifest],
-  [`pocketbeat-${manifest.version}-firefox.zip`, firefoxManifest(manifest)],
+  [`vibing-son-${manifest.version}.zip`, manifest],
+  [`vibing-son-${manifest.version}-firefox.zip`, firefoxManifest(manifest)],
 ];
 fs.mkdirSync(path.join(root, "dist"), { recursive: true });
 for (const [name, m] of builds) {

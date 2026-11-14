@@ -1,5 +1,5 @@
 {
-  "name": "pocketbeat",
+  "name": "vibing-son",
   "version": "1.2.0",
   "private": true,
   "description": "Search, play, queue, and sing along to YouTube Music songs right from your toolbar.",
@@ -7,7 +7,7 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/muhamadsyahrulmubarok/pocketbeat.git"
+    "url": "https://github.com/Sonraku13/vibing-son.git"
   },
   "scripts": {
     "lint": "eslint .",

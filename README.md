@@ -1,12 +1,12 @@
-# PocketBeat
+# vibing son
 
 Search, play, queue, and sing along to YouTube Music songs right from your browser toolbar, without
 opening a YouTube Music tab and without an API key.
 
 <p>
-  <img src="docs/screenshot-search.png" alt="PocketBeat popup showing song search results while a song plays" width="250">
-  <img src="docs/screenshot-playlist-search.png" alt="PocketBeat popup showing YouTube Music playlist search results" width="250">
-  <img src="docs/screenshot-playlists.png" alt="PocketBeat popup showing the Playlists tab with saved playlists" width="250">
+  <img src="docs/screenshot-search.png" alt="vibing son popup showing song search results while a song plays" width="250">
+  <img src="docs/screenshot-playlist-search.png" alt="vibing son popup showing YouTube Music playlist search results" width="250">
+  <img src="docs/screenshot-playlists.png" alt="vibing son popup showing the Playlists tab with saved playlists" width="250">
 </p>
 
 ## Features
@@ -17,10 +17,9 @@ opening a YouTube Music tab and without an API key.
   to put it in the search box and keep typing, Enter to search, Esc to close.
 - **Plays in the background.** Music keeps playing after you close the popup. No tab is opened.
 - **Queue.** Play now, add to queue, remove, clear.
-- **Playlists.** Save your queue as a playlist, or search YouTube Music playlists (Results → Playlists) to
-  play one or save it. Saved playlists stay in your browser.
+- **Playlists & URL Detection.** Save your queue as a playlist, paste any YouTube or YouTube Music playlist URL (or playlist ID) directly in the search bar, or search YouTube Music playlists (Results → Playlists) to play or save them. Saved playlists stay in your browser.
 - **Up next.** Suggestions come from the YouTube Music radio for the current song. When the queue ends,
-  PocketBeat keeps playing from that radio, the same way YouTube Music does.
+  vibing son keeps playing from that radio, the same way YouTube Music does.
 - **Synced lyrics** from [LRCLIB](https://lrclib.net), highlighted line by line.
 - **Romanized lyrics (optional).** For Korean and Japanese songs, turn on **Romanized** in the Lyrics tab to
   see each line in Latin letters, so you can sing along. Off by default, and it works offline: Korean is
@@ -30,34 +29,34 @@ opening a YouTube Music tab and without an API key.
 
 ## Install
 
-PocketBeat is not on the Chrome Web Store or addons.mozilla.org. Each
-[release](https://github.com/muhamadsyahrulmubarok/pocketbeat/releases/latest) has one package per browser,
+vibing son is not on the Chrome Web Store or addons.mozilla.org. Each
+[release](https://github.com/Sonraku13/vibing-son/releases/latest) has one package per browser,
 built from the same code.
 
 ### Chrome, Edge, Brave, Opera (Chromium 116+)
 
-<img src="docs/install-chrome.gif" alt="Installing PocketBeat in Chrome: download and unzip, turn on Developer mode, Load unpacked, select the folder, then search and play" width="720">
+<img src="docs/install-chrome.gif" alt="Installing vibing son in Chrome: download and unzip, turn on Developer mode, Load unpacked, select the folder, then search and play" width="720">
 
-1. Download `pocketbeat-<version>.zip` and unzip it. (Or clone this repository.)
+1. Download `vibing-son-<version>.zip` and unzip it. (Or clone this repository.)
 2. Open `chrome://extensions` and turn on **Developer mode** (top right).
 3. Click **Load unpacked** and select the unzipped folder.
-4. Pin PocketBeat to the toolbar, open it, and search for a song.
+4. Pin vibing son to the toolbar, open it, and search for a song.
 
 To update, replace the folder with the new release and click the reload icon on the extension's card in
 `chrome://extensions`.
 
 ### Firefox (140+)
 
-<img src="docs/install-firefox.gif" alt="Installing PocketBeat in Firefox: Load Temporary Add-on in about:debugging, select the Firefox zip, then allow autoplay once from the address bar" width="720">
+<img src="docs/install-firefox.gif" alt="Installing vibing son in Firefox: Load Temporary Add-on in about:debugging, select the Firefox zip, then allow autoplay once from the address bar" width="720">
 
-Firefox only installs add-ons signed by Mozilla, and PocketBeat is not signed yet. Until then you can load it
+Firefox only installs add-ons signed by Mozilla, and vibing son is not signed yet. Until then you can load it
 for the current session:
 
-1. Download `pocketbeat-<version>-firefox.zip` (don't unzip it).
+1. Download `vibing-son-<version>-firefox.zip` (don't unzip it).
 2. Open `about:debugging#/runtime/this-firefox` and click **Load Temporary Add-on…**.
-3. Select the zip. PocketBeat stays installed until Firefox restarts.
+3. Select the zip. vibing son stays installed until Firefox restarts.
 
-**First song:** Firefox blocks sound from playing on its own, so the first time PocketBeat shows an
+**First song:** Firefox blocks sound from playing on its own, so the first time vibing son shows an
 **Allow autoplay** button. It opens a page that walks you through it: click the autoplay icon in the address
 bar and choose **Allow Audio and Video**. You only do this once per install.
 
@@ -96,7 +95,7 @@ the free 10,000 daily quota units. The key is stored only in your browser.
 ## Limitations
 
 - **Unofficial API.** YouTube Music's internal API is undocumented and can change at any time, which would
-  break search and Up next until PocketBeat is updated.
+  break search and Up next until vibing son is updated.
 - **Ads.** Playback goes through the standard YouTube embed, so YouTube may play ads.
 - **Idle player.** The browser closes the hidden player after about 30 seconds without audio (for example a
   long pause). Pressing play resumes from where you left off.
@@ -106,7 +105,7 @@ the free 10,000 daily quota units. The key is stored only in your browser.
 
 ## Privacy
 
-PocketBeat has no servers, no analytics, and no accounts. Your queue, history, and settings stay in your
+vibing son has no servers, no analytics, and no accounts. Your queue, history, and settings stay in your
 browser. See [PRIVACY.md](PRIVACY.md) for exactly what is sent where.
 
 ## Development
@@ -117,7 +116,7 @@ tooling.
 ```bash
 npm install        # dev tooling (ESLint)
 npm test           # lint + manifest/file checks
-npm run package    # builds dist/pocketbeat-<version>.zip and dist/pocketbeat-<version>-firefox.zip
+npm run package    # builds dist/vibing-son-<version>.zip and dist/vibing-son-<version>-firefox.zip
 ```
 
 `manifest.json` is the Chromium manifest. The Firefox manifest is generated from it by
@@ -130,8 +129,8 @@ In Chromium, load the repository folder with **Load unpacked** while developing.
 
 ## Disclaimer
 
-PocketBeat is an independent project. It is not affiliated with, endorsed by, or sponsored by YouTube or
-Google. "YouTube" and "YouTube Music" are trademarks of Google LLC. Use PocketBeat in line with the
+vibing son is an independent project. It is not affiliated with, endorsed by, or sponsored by YouTube or
+Google. "YouTube" and "YouTube Music" are trademarks of Google LLC. Use vibing son in line with the
 [YouTube Terms of Service](https://www.youtube.com/t/terms).
 
 ## License

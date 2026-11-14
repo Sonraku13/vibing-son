@@ -42,4 +42,4 @@ if (errors.length) {
   console.error("check failed:\n- " + errors.join("\n- "));
   process.exit(1);
 }
-console.log(`check ok: PocketBeat v${manifest.version}, ${new Set(referenced).size} referenced files present`);
+console.log(`check ok: ${manifest.name} v${manifest.version}, ${new Set(referenced).size} referenced files present`);
