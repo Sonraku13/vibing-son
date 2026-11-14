@@ -361,7 +361,7 @@ async function getPlaylistInfoYtm(playlistId) {
     throw new Error("Playlist tidak ditemukan atau bersifat privat. Pastikan playlist disetel ke Publik atau Unlisted.");
   }
 
-  const title = header?.title ? runsText(header.title?.runs) : "Playlist";
+  const title = runsText(header?.title?.runs) || "Playlist";
   const subParts = [runsText(header?.subtitle?.runs), runsText(header?.secondSubtitle?.runs)].filter(Boolean);
   const subtitle = subParts.join(" • ") || (shelf?.contents ? `${shelf.contents.length} songs` : "Playlist");
   const thumbnail = bestThumb(header?.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails) || "";

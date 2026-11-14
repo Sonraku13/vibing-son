@@ -17,4 +17,14 @@ assert.equal(parsePlaylistId("PL4fGSI1pDJn6O1LS0XSdF3RyO0KQ_EO-f"), "PL4fGSI1pDJ
 assert.equal(parsePlaylistId("RDCLAK5uy_lRr70m6uTvLpxAG3G6Yuc41cJBIXODAws"), "RDCLAK5uy_lRr70m6uTvLpxAG3G6Yuc41cJBIXODAws");
 assert.equal(parsePlaylistId("just a normal search query"), null);
 assert.equal(parsePlaylistId("https://music.youtube.com/watch?v=dQw4w9WgXcQ"), null);
+
+// Edge cases from review:
+assert.equal(parsePlaylistId("https://music.youtube.com/playlist?list=" + "A".repeat(70)), null);
+assert.equal(parsePlaylistId("https://music.youtube.com/playlist?list=PL123$invalid"), null);
+assert.equal(parsePlaylistId("PLAYSTATION5"), null);
+assert.equal(parsePlaylistId("PLATFORMING"), null);
+assert.equal(parsePlaylistId("RDLIFEMUSIC"), null);
+assert.equal(parsePlaylistId("https://m.youtube.com/playlist?list=PL4fGSI1pDJn6O1LS0XSdF3RyO0KQ_EO-f&index=2"), "PL4fGSI1pDJn6O1LS0XSdF3RyO0KQ_EO-f");
+assert.equal(parsePlaylistId("VLPL4fGSI1pDJn6O1LS0XSdF3RyO0KQ_EO-f"), "PL4fGSI1pDJn6O1LS0XSdF3RyO0KQ_EO-f");
+
 console.log("playlist-url tests pass!");
