@@ -345,6 +345,30 @@ async function playlistTracksYtm(playlistId) {
   return tracks;
 }
 
+// Resolves metadata (title, subtitle, thumbnail) for a YouTube Music playlist ID.
+async function getPlaylistInfoYtm(playlistId) {
+  if (!PLAYLIST_ID.test(playlistId || "")) {
+    throw new Error("Invalid playlist ID");
+  }
+  const data = await ytmApi("browse", { browseId: `VL${playlistId}` });
+  const header =
+    findKey(data, "musicResponsiveHeaderRenderer") ||
+    findKey(data, "musicDetailHeaderRenderer") ||
+    findKey(data, "musicEditablePlaylistDetailHeaderRenderer");
+  const shelf = findKey(data, "musicPlaylistShelfRenderer");
+
+  if (!header && !shelf) {
+    throw new Error("Playlist tidak ditemukan atau bersifat privat. Pastikan playlist disetel ke Publik atau Unlisted.");
+  }
+
+  const title = header?.title ? runsText(header.title?.runs) : "Playlist";
+  const subParts = [runsText(header?.subtitle?.runs), runsText(header?.secondSubtitle?.runs)].filter(Boolean);
+  const subtitle = subParts.join(" • ") || (shelf?.contents ? `${shelf.contents.length} songs` : "Playlist");
+  const thumbnail = bestThumb(header?.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails) || "";
+
+  return { playlistId, title, subtitle, thumbnail };
+}
+
 // Only the fields a queue item needs (drops flags such as `auto`).
 const pickTrack = (t) => ({
   videoId: String(t.videoId),
@@ -683,6 +707,19 @@ const handlers = {
   PLAY_INDEX: (msg) => playIndex(msg.index).then(() => ({ ok: true })),
   REMOVE: (msg) => removeAt(msg.index).then(() => ({ ok: true })),
   SEARCH_PLAYLISTS: (msg) => searchPlaylistsYtm(msg.query).then((results) => ({ ok: true, results })),
+  RESOLVE_PLAYLIST: async (msg) => {
+    try {
+      const playlist = await getPlaylistInfoYtm(msg.playlistId);
+      return { ok: true, playlist };
+    } catch (err) {
+      return {
+        ok: false,
+        error:
+          err.message ||
+          "Playlist tidak ditemukan atau bersifat privat. Pastikan playlist disetel ke Publik atau Unlisted.",
+      };
+    }
+  },
   GET_PLAYLISTS: async () => ({
     ok: true,
     playlists: (await getPlaylists()).map((p) => ({ id: p.id, name: p.name, thumbnail: p.thumbnail, count: p.tracks.length })),
