@@ -265,8 +265,15 @@ svg { display: block; width: 20px; height: 20px; fill: currentColor; }
   margin-top: 6px;
 }
 .transport { display: flex; align-items: center; gap: 4px; }
+.transport .icon-btn { width: 32px; height: 32px; }
+.transport .icon-btn svg { width: 18px; height: 18px; }
+.icon-btn.active { color: var(--accent); }
+.icon-btn.active:hover { color: var(--accent); }
+#repeat-btn .i-repeat-one { display: none; }
+#repeat-btn.repeat-one .i-repeat { display: none; }
+#repeat-btn.repeat-one .i-repeat-one { display: block; }
 .volume { display: flex; align-items: center; gap: 4px; }
-#volume-bar { width: 84px; }
+#volume-bar { width: 72px; }
 #mute-btn .i-mute { display: none; }
 #mute-btn.muted .i-vol { display: none; }
 #mute-btn.muted .i-mute { display: block; }

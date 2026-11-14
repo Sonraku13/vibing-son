@@ -24,8 +24,10 @@ Search, stream in the background, paste playlist URLs directly, manage your queu
 - **🔍 Native YouTube Music Search & Autocomplete:** Searches official studio tracks, artists, and albums (filtering out noisy video uploads). Supports real-time query suggestions with keyboard shortcuts (`↓` / `↑` to navigate, `→` to append, `Enter` to search, `Esc` to dismiss).
 - **🎤 Synced & Romanized Lyrics:** Line-by-line synchronized lyrics powered by [LRCLIB](https://lrclib.net). Includes built-in **offline romanization** for Korean (Hangul) and Japanese (Kanji/Kana) songs so you can sing along without looking up romanized lyrics manually.
 - **📜 Smart Queue & Endless Radio:** Full queue management (Play Next, Add to Queue, Reorder, Remove). When your queue ends, **vibing son** automatically spins up YouTube Music's radio stream based on your last track to keep the music flowing.
+- **🔀 Looping & Shuffle Controls:** Seamless Repeat All, Repeat One, and random Shuffle modes right on the transport bar.
+- **📚 Deep Playlist Pagination (500+ Songs):** Automatically fetches full YouTube Music playlists using continuation tokens—supporting massive playlists up to 2,000 tracks without truncation.
 - **💾 Local Saved Playlists:** Save your active queue or imported playlists locally in browser storage. No accounts, login, or cloud syncing required.
-- **🎛️ Full Player Controls:** Scrubbing seek bar, volume control with cross-session persistence, and mute toggle.
+- **🎛️ Full Player Controls:** Scrubbing seek bar, volume control with cross-session persistence, mute toggle, repeat, and shuffle.
 - **🔒 Private & Lightweight:** Zero telemetry, no external analytical scripts, and no user tracking. All data (queue, history, saved playlists) remains exclusively on your machine.
 
 ---
@@ -36,7 +38,7 @@ Search, stream in the background, paste playlist URLs directly, manage your queu
 
 ### 🌐 Chrome, Brave, Edge, Opera (Chromium 116+)
 
-1. Download [`vibing-son-1.2.0.zip`](https://github.com/Sonraku13/vibing-son/releases/latest) from the Releases section and unzip it (or clone this repository).
+1. Download [`vibing-son-0.0.1.zip`](https://github.com/Sonraku13/vibing-son/releases/latest) from the Releases section and unzip it (or clone this repository).
 2. Navigate to `chrome://extensions` in your browser.
 3. Enable **Developer mode** toggle in the top-right corner.
 4. Click **Load unpacked** and choose the unzipped repository/release folder.
@@ -46,7 +48,7 @@ Search, stream in the background, paste playlist URLs directly, manage your queu
 
 ### 🦊 Firefox (140+)
 
-1. Download [`vibing-son-1.2.0-firefox.zip`](https://github.com/Sonraku13/vibing-son/releases/latest) (do not unzip).
+1. Download [`vibing-son-0.0.1-firefox.zip`](https://github.com/Sonraku13/vibing-son/releases/latest) (do not unzip).
 2. Navigate to `about:debugging#/runtime/this-firefox`.
 3. Click **Load Temporary Add-on…** and select the `.zip` package.
 4. **First playback permission:** Firefox blocks media autoplay by default. When the extension opens, click the **Allow autoplay** banner and choose **Allow Audio and Video** in your address bar icon.

@@ -62,8 +62,15 @@ chrome.runtime.onStartup.addListener(setupHeaderRules);
 const YTM_CLIENT = { clientName: "WEB_REMIX", clientVersion: "1.20241106.01.00", hl: "en" };
 const YTM_SONGS_FILTER = "EgWKAQIIAWoMEA4QChADEAQQCRAF"; // the "Songs" search filter
 
-async function ytmApi(endpoint, body) {
-  const res = await fetch(`https://music.youtube.com/youtubei/v1/${endpoint}?prettyPrint=false`, {
+async function ytmApi(endpoint, body = {}, params = null) {
+  const url = new URL(`https://music.youtube.com/youtubei/v1/${endpoint}`);
+  url.searchParams.set("prettyPrint", "false");
+  if (params) {
+    for (const [k, v] of Object.entries(params)) {
+      url.searchParams.set(k, v);
+    }
+  }
+  const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ context: { client: YTM_CLIENT }, ...body }),
@@ -288,7 +295,7 @@ const YTM_PLAYLIST_FILTERS = [
 ];
 const PLAYLIST_ID = /^[A-Za-z0-9_-]{10,64}$/;
 const MAX_PLAYLISTS = 50;
-const MAX_PLAYLIST_TRACKS = 200;
+const MAX_PLAYLIST_TRACKS = 2000;
 
 async function searchPlaylistsYtm(query) {
   const pages = await Promise.all(
@@ -321,27 +328,53 @@ function findKey(obj, key) {
   return null;
 }
 
-// The first 100 songs of a YouTube Music playlist.
+// Up to MAX_PLAYLIST_TRACKS songs of a YouTube Music playlist.
 async function playlistTracksYtm(playlistId) {
   if (!PLAYLIST_ID.test(playlistId || "")) throw new Error("Invalid playlist");
   const data = await ytmApi("browse", { browseId: `VL${playlistId}` });
   const shelf = findKey(data, "musicPlaylistShelfRenderer");
   const tracks = [];
-  for (const item of shelf?.contents || []) {
+
+  const parseItem = (item) => {
     const r = item.musicResponsiveListItemRenderer;
     const videoId = r?.playlistItemData?.videoId;
-    if (!videoId) continue; // unavailable songs
+    if (!videoId) return null; // unavailable songs
     const cols = flexColumns(r);
     const fixed = r.fixedColumns?.[0]?.musicResponsiveListItemFixedColumnRenderer?.text?.runs;
-    tracks.push({
+    return {
       videoId,
       title: runsText(cols[0]),
       artist: runsText(cols[1]),
       album: runsText(cols[2]),
       duration: parseClock(runsText(fixed)),
       thumbnail: bestThumb(r.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails),
-    });
+    };
+  };
+
+  let items = shelf?.contents || [];
+  while (items.length > 0 && tracks.length < MAX_PLAYLIST_TRACKS) {
+    let nextContinuationToken = null;
+    for (const item of items) {
+      if (item.musicResponsiveListItemRenderer) {
+        const t = parseItem(item);
+        if (t) tracks.push(t);
+        if (tracks.length >= MAX_PLAYLIST_TRACKS) break;
+      } else if (item.continuationItemRenderer) {
+        nextContinuationToken = item.continuationItemRenderer?.continuationEndpoint?.continuationCommand?.token;
+      }
+    }
+
+    if (!nextContinuationToken || tracks.length >= MAX_PLAYLIST_TRACKS) break;
+
+    const contData = await ytmApi(
+      "browse",
+      {},
+      { continuation: nextContinuationToken, ctoken: nextContinuationToken }
+    ).catch(() => null);
+
+    items = contData?.onResponseReceivedActions?.[0]?.appendContinuationItemsAction?.continuationItems || [];
   }
+
   return tracks;
 }
 
@@ -473,7 +506,7 @@ async function fetchLyrics(title, artist, duration) {
 
 // ---------- STATE (queue + player status) ----------
 async function getPlayback() {
-  return chrome.storage.local.get({ queue: [], index: -1 });
+  return chrome.storage.local.get({ queue: [], index: -1, repeat: "off", shuffle: false });
 }
 
 async function setPlayback(patch) {
@@ -494,9 +527,19 @@ async function getLastStatus() {
 }
 
 async function broadcastState() {
-  const { queue, index } = await getPlayback();
+  const { queue, index, repeat, shuffle } = await getPlayback();
   const status = await getLastStatus();
-  chrome.runtime.sendMessage({ target: "broadcast", type: "STATE", queue, index, status }).catch(() => {});
+  chrome.runtime
+    .sendMessage({
+      target: "broadcast",
+      type: "STATE",
+      queue,
+      index,
+      status,
+      repeat: repeat || "off",
+      shuffle: !!shuffle,
+    })
+    .catch(() => {});
 }
 
 // ---------- OFFSCREEN PLAYER ----------
@@ -603,10 +646,43 @@ async function stopPlayback() {
   broadcastState();
 }
 
-async function next() {
-  const { queue, index } = await getPlayback();
+async function next(isAutoEnded = false) {
+  const { queue, index, repeat, shuffle } = await getPlayback();
+  if (!queue.length) return;
+
+  // 1. Repeat ONE: replay current track if auto-ended
+  if (isAutoEnded && repeat === "one" && index >= 0 && index < queue.length) {
+    return playIndex(index, 0);
+  }
+
+  // 2. SHUFFLE mode
+  if (shuffle && queue.length > 1) {
+    const { played = [] } = await chrome.storage.local.get({ played: [] });
+    let candidates = queue
+      .map((t, idx) => ({ t, idx }))
+      .filter((item) => item.idx !== index && !played.includes(item.t.videoId));
+
+    if (!candidates.length && repeat === "all") {
+      candidates = queue
+        .map((t, idx) => ({ t, idx }))
+        .filter((item) => item.idx !== index);
+    }
+
+    if (candidates.length > 0) {
+      const chosen = candidates[Math.floor(Math.random() * candidates.length)];
+      return playIndex(chosen.idx);
+    }
+  }
+
+  // 3. Sequential navigation
   if (index + 1 < queue.length) return playIndex(index + 1);
-  // End of the queue: append the first suggestion and play it.
+
+  // 4. End of queue: loop if repeat === "all"
+  if (repeat === "all" && queue.length > 0) {
+    return playIndex(0);
+  }
+
+  // 5. Repeat is off: append the first suggestion and play it.
   const [suggestion] = await getSuggestions(queue[index], 1);
   if (suggestion) {
     queue.push({ ...suggestion, auto: true });
@@ -618,9 +694,12 @@ async function next() {
 }
 
 async function prev() {
-  const { index } = await getPlayback();
+  const { queue, index, repeat } = await getPlayback();
   const status = await getLastStatus();
   if ((status?.time || 0) > 3 || index <= 0) {
+    if (index === 0 && repeat === "all" && queue.length > 1 && (status?.time || 0) <= 3) {
+      return playIndex(queue.length - 1);
+    }
     await toOffscreen({ type: "SEEK", time: 0 });
     return;
   }
@@ -673,7 +752,7 @@ async function onPlayerStatus(status) {
     blocked: !!status.blocked,
   };
   await chrome.storage.session.set({ lastStatus });
-  if (status.state === 0 && prevState !== 0) await next(); // song ended
+  if (status.state === 0 && prevState !== 0) await next(true); // song ended
 }
 
 // ---------- MESSAGE ROUTER ----------
@@ -686,7 +765,7 @@ const handlers = {
       .catch(() => ({ ok: true, items: [] })),
   LYRICS: (msg) => fetchLyrics(msg.title, msg.artist, msg.duration).then((lyrics) => ({ ok: true, lyrics })),
   GET_STATE: async () => {
-    const { queue, index } = await getPlayback();
+    const { queue, index, repeat, shuffle } = await getPlayback();
     let status = await getLastStatus();
     if (await hasOffscreen()) {
       const live = await toOffscreen({ type: "GET_STATUS" });
@@ -695,13 +774,26 @@ const handlers = {
       status = { ...status, state: status.state === 0 ? 0 : 2 }; // player closed = paused
     }
     const { volume } = await chrome.storage.local.get({ volume: 100 });
-    return { ok: true, queue, index, status, volume };
+    return { ok: true, queue, index, status, volume, repeat: repeat || "off", shuffle: !!shuffle };
   },
   GET_SUGGESTIONS: async () => {
     const { queue, index } = await getPlayback();
     return { ok: true, videoId: queue[index]?.videoId || null, items: await getSuggestions(queue[index], 5) };
   },
   SET_VOLUME: (msg) => setVolume(msg.volume).then(() => ({ ok: true })),
+  SET_REPEAT: async (msg) => {
+    const modes = ["off", "all", "one"];
+    const repeat = modes.includes(msg.mode) ? msg.mode : "off";
+    await chrome.storage.local.set({ repeat });
+    broadcastState();
+    return { ok: true, repeat };
+  },
+  SET_SHUFFLE: async (msg) => {
+    const shuffle = !!msg.enabled;
+    await chrome.storage.local.set({ shuffle });
+    broadcastState();
+    return { ok: true, shuffle };
+  },
   PLAY_TRACK: (msg) => playTrackNow(msg.track).then(() => ({ ok: true })),
   ENQUEUE: (msg) => enqueue(msg.track).then(() => ({ ok: true })),
   PLAY_INDEX: (msg) => playIndex(msg.index).then(() => ({ ok: true })),
@@ -747,7 +839,7 @@ const handlers = {
   CONTROL: async (msg) => {
     if (msg.action === "play") await toggle();
     if (msg.action === "resume") await resume();
-    if (msg.action === "next") await next();
+    if (msg.action === "next") await next(false);
     if (msg.action === "prev") await prev();
     if (msg.action === "seek") await seek(Number(msg.time) || 0);
     return { ok: true };

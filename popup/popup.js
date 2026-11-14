@@ -464,10 +464,30 @@ $("save-playlist-form").addEventListener("submit", async (e) => {
 });
 
 // ---------- STATE ----------
-let state = { queue: [], index: -1, status: null };
+let state = { queue: [], index: -1, status: null, repeat: "off", shuffle: false };
 
 function currentTrack() {
   return state.queue[state.index] || null;
+}
+
+function renderModes() {
+  const shuffleBtn = $("shuffle-btn");
+  if (shuffleBtn) {
+    shuffleBtn.classList.toggle("active", !!state.shuffle);
+    const label = state.shuffle ? "Shuffle: On" : "Shuffle: Off";
+    shuffleBtn.title = label;
+    shuffleBtn.setAttribute("aria-label", label);
+  }
+
+  const repeatBtn = $("repeat-btn");
+  if (repeatBtn) {
+    const mode = state.repeat || "off";
+    repeatBtn.classList.toggle("active", mode !== "off");
+    repeatBtn.classList.toggle("repeat-one", mode === "one");
+    const label = mode === "one" ? "Repeat: One" : mode === "all" ? "Repeat: All" : "Repeat: Off";
+    repeatBtn.title = label;
+    repeatBtn.setAttribute("aria-label", label);
+  }
 }
 
 function render() {
@@ -484,6 +504,7 @@ function render() {
   $("queue-count").textContent = state.queue.length ? String(state.queue.length) : "";
   renderStatus();
   renderQueue();
+  renderModes();
   maybeLoadLyrics();
   maybeLoadSuggestions();
 }
@@ -538,7 +559,13 @@ function renderQueue() {
 chrome.runtime.onMessage.addListener((msg) => {
   if (msg.target !== "broadcast") return;
   if (msg.type === "STATE") {
-    state = { queue: msg.queue, index: msg.index, status: msg.status };
+    state = {
+      queue: msg.queue,
+      index: msg.index,
+      status: msg.status,
+      repeat: msg.repeat || "off",
+      shuffle: !!msg.shuffle,
+    };
     setStatus("");
     render();
   }
@@ -555,6 +582,21 @@ chrome.runtime.onMessage.addListener((msg) => {
 // ---------- CONTROLS ----------
 ["play", "next", "prev"].forEach((action) => {
   $(`${action}-btn`).addEventListener("click", () => sw({ type: "CONTROL", action }));
+});
+
+$("shuffle-btn").addEventListener("click", () => {
+  const enabled = !state.shuffle;
+  state.shuffle = enabled;
+  renderModes();
+  sw({ type: "SET_SHUFFLE", enabled });
+});
+
+$("repeat-btn").addEventListener("click", () => {
+  const cycle = { off: "all", all: "one", one: "off" };
+  const mode = cycle[state.repeat || "off"] || "off";
+  state.repeat = mode;
+  renderModes();
+  sw({ type: "SET_REPEAT", mode });
 });
 
 $("clear-queue-btn").addEventListener("click", () => sw({ type: "CLEAR_QUEUE" }));
@@ -814,7 +856,13 @@ $("api-key-form").addEventListener("submit", async (e) => {
   if (res?.ok) {
     if (res.volume > 0) restoreVolume = res.volume;
     renderVolume(res.volume);
-    state = { queue: res.queue, index: res.index, status: res.status };
+    state = {
+      queue: res.queue,
+      index: res.index,
+      status: res.status,
+      repeat: res.repeat || "off",
+      shuffle: !!res.shuffle,
+    };
     render();
   } else {
     render();
