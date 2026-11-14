@@ -1,142 +1,123 @@
-# vibing son
+# 🎵 vibing son
 
-Search, play, queue, and sing along to YouTube Music songs right from your browser toolbar, without
-opening a YouTube Music tab and without an API key.
+[![Manifest V3](https://img.shields.io/badge/Manifest-V3-brightgreen.svg)](https://developer.chrome.com/docs/extensions/mv3/intro/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![No API Key](https://img.shields.io/badge/API%20Key-Not%20Required-success.svg)](https://music.youtube.com)
+[![Privacy: Zero Tracking](https://img.shields.io/badge/Telemetry-Zero-blueviolet.svg)](PRIVACY.md)
 
-<p>
-  <img src="docs/screenshot-search.png" alt="vibing son popup showing song search results while a song plays" width="250">
+A distraction-free, toolbar-first YouTube Music companion for Chrome, Firefox, and Chromium-based browsers. 
+
+Search, stream in the background, paste playlist URLs directly, manage your queue, and sing along with synced & offline-romanized lyrics — **without opening a YouTube Music tab, and without an API key**.
+
+<p align="center">
+  <img src="docs/screenshot-search.png" alt="vibing son popup showing song search results while playing" width="250">
   <img src="docs/screenshot-playlist-search.png" alt="vibing son popup showing YouTube Music playlist search results" width="250">
   <img src="docs/screenshot-playlists.png" alt="vibing son popup showing the Playlists tab with saved playlists" width="250">
 </p>
 
-## Features
+---
 
-- **Song search from YouTube Music.** Results are song versions with album art, artist, and album,
-  not music videos. No API key, no quota.
-- **Search suggestions as you type.** Up to 4 suggestions from YouTube Music. Use ↓/↑ to pick one, →
-  to put it in the search box and keep typing, Enter to search, Esc to close.
-- **Plays in the background.** Music keeps playing after you close the popup. No tab is opened.
-- **Queue.** Play now, add to queue, remove, clear.
-- **Playlists & URL Detection.** Save your queue as a playlist, paste any YouTube or YouTube Music playlist URL (or playlist ID) directly in the search bar, or search YouTube Music playlists (Results → Playlists) to play or save them. Saved playlists stay in your browser.
-- **Up next.** Suggestions come from the YouTube Music radio for the current song. When the queue ends,
-  vibing son keeps playing from that radio, the same way YouTube Music does.
-- **Synced lyrics** from [LRCLIB](https://lrclib.net), highlighted line by line.
-- **Romanized lyrics (optional).** For Korean and Japanese songs, turn on **Romanized** in the Lyrics tab to
-  see each line in Latin letters, so you can sing along. Off by default, and it works offline: Korean is
-  converted by rules, Japanese with a built-in reading dictionary of about 130 KB. Japanese kanji with
-  several readings can occasionally come out wrong.
-- **Seek bar, volume, and mute**, with the volume remembered between songs.
+## ✨ Features
 
-## Install
+- **🎧 True Background Playback:** Music plays from a lightweight, isolated offscreen player. Closing the popup never stops or interrupts playback, and no extra browser tab is ever kept open.
+- **🔗 Instant Playlist URL Auto-Detection:** Paste any YouTube or YouTube Music playlist link (`music.youtube.com/playlist?list=...`, `youtube.com/watch?v=...&list=...`, `youtu.be/...`, or raw `PL...` ID) directly into the search bar. The extension resolves it immediately to stream or save.
+- **🔍 Native YouTube Music Search & Autocomplete:** Searches official studio tracks, artists, and albums (filtering out noisy video uploads). Supports real-time query suggestions with keyboard shortcuts (`↓` / `↑` to navigate, `→` to append, `Enter` to search, `Esc` to dismiss).
+- **🎤 Synced & Romanized Lyrics:** Line-by-line synchronized lyrics powered by [LRCLIB](https://lrclib.net). Includes built-in **offline romanization** for Korean (Hangul) and Japanese (Kanji/Kana) songs so you can sing along without looking up romanized lyrics manually.
+- **📜 Smart Queue & Endless Radio:** Full queue management (Play Next, Add to Queue, Reorder, Remove). When your queue ends, **vibing son** automatically spins up YouTube Music's radio stream based on your last track to keep the music flowing.
+- **💾 Local Saved Playlists:** Save your active queue or imported playlists locally in browser storage. No accounts, login, or cloud syncing required.
+- **🎛️ Full Player Controls:** Scrubbing seek bar, volume control with cross-session persistence, and mute toggle.
+- **🔒 Private & Lightweight:** Zero telemetry, no external analytical scripts, and no user tracking. All data (queue, history, saved playlists) remains exclusively on your machine.
 
-vibing son is not on the Chrome Web Store or addons.mozilla.org. Each
-[release](https://github.com/Sonraku13/vibing-son/releases/latest) has one package per browser,
-built from the same code.
+---
 
-### Chrome, Edge, Brave, Opera (Chromium 116+)
+## 🚀 Installation
 
-<img src="docs/install-chrome.gif" alt="Installing vibing son in Chrome: download and unzip, turn on Developer mode, Load unpacked, select the folder, then search and play" width="720">
+*vibing son is built directly from source and packaged for self-hosting or loading unpacked.*
 
-1. Download `vibing-son-<version>.zip` and unzip it. (Or clone this repository.)
-2. Open `chrome://extensions` and turn on **Developer mode** (top right).
-3. Click **Load unpacked** and select the unzipped folder.
-4. Pin vibing son to the toolbar, open it, and search for a song.
+### 🌐 Chrome, Brave, Edge, Opera (Chromium 116+)
 
-To update, replace the folder with the new release and click the reload icon on the extension's card in
-`chrome://extensions`.
+1. Download [`vibing-son-1.2.0.zip`](https://github.com/Sonraku13/vibing-son/releases/latest) from the Releases section and unzip it (or clone this repository).
+2. Navigate to `chrome://extensions` in your browser.
+3. Enable **Developer mode** toggle in the top-right corner.
+4. Click **Load unpacked** and choose the unzipped repository/release folder.
+5. Pin **vibing son** to your toolbar for one-click access.
 
-### Firefox (140+)
+> *To update:* Replace the folder with the newest release and click the Reload button on the extension card in `chrome://extensions`.
 
-<img src="docs/install-firefox.gif" alt="Installing vibing son in Firefox: Load Temporary Add-on in about:debugging, select the Firefox zip, then allow autoplay once from the address bar" width="720">
+### 🦊 Firefox (140+)
 
-Firefox only installs add-ons signed by Mozilla, and vibing son is not signed yet. Until then you can load it
-for the current session:
+1. Download [`vibing-son-1.2.0-firefox.zip`](https://github.com/Sonraku13/vibing-son/releases/latest) (do not unzip).
+2. Navigate to `about:debugging#/runtime/this-firefox`.
+3. Click **Load Temporary Add-on…** and select the `.zip` package.
+4. **First playback permission:** Firefox blocks media autoplay by default. When the extension opens, click the **Allow autoplay** banner and choose **Allow Audio and Video** in your address bar icon.
 
-1. Download `vibing-son-<version>-firefox.zip` (don't unzip it).
-2. Open `about:debugging#/runtime/this-firefox` and click **Load Temporary Add-on…**.
-3. Select the zip. vibing son stays installed until Firefox restarts.
+---
 
-**First song:** Firefox blocks sound from playing on its own, so the first time vibing son shows an
-**Allow autoplay** button. It opens a page that walks you through it: click the autoplay icon in the address
-bar and choose **Allow Audio and Video**. You only do this once per install.
+## 🛠️ Architecture & How It Works
 
-## How it works
+Manifest V3 restricts long-running background tasks. **vibing son** leverages an asynchronous offscreen document to host a controlled YouTube iframe while maintaining a minimal memory footprint.
 
 ```
-popup ──commands──▶ service worker ──LOAD / TOGGLE / SEEK──▶ offscreen document
-  ▲                 (queue, search,                          └─ YouTube embed iframe
-  └── STATE / PLAYER_STATUS ── suggestions, lyrics) ◀── status, ended, errors ──┘
+┌──────────────┐   Message Passing (chrome.runtime)   ┌───────────────────────────┐
+│  Popup UI    ├─────────────────────────────────────▶│  Background Service       │
+│  (HTML/CSS)  │◀─────────────────────────────────────┤  Worker                   │
+└──────────────┘                                      └─────────────┬─────────────┘
+                                                                    │ Load / Seek / Toggle
+                                                                    ▼
+                                                      ┌───────────────────────────┐
+                                                      │  Offscreen Document       │
+                                                      │  (Embedded YouTube IFrame)│
+                                                      └───────────────────────────┘
 ```
 
-| Part | File | Role |
-|------|------|------|
-| Popup | `popup/` | The UI. A remote control only: it holds no playback state. |
-| Service worker | `background/service-worker.js` | Search, suggestions, lyrics, the queue, auto-advance. |
-| Offscreen document | `offscreen/` | A hidden page that survives the popup closing. It hosts a YouTube embed iframe, driven through the IFrame API `postMessage` protocol (the `iframe_api` script itself can't be loaded in Manifest V3). Firefox has no offscreen API, so there the same page runs in an iframe inside the background page. |
+| Component | Path | Responsibility |
+|---|---|---|
+| **Popup UI** | `popup/` | User interface: search bar, queue manager, tabs, settings, and lyric highlighter. |
+| **Service Worker** | `background/service-worker.js` | Core orchestration: search querying, playlist resolution, queue storage, and state broadcast. |
+| **Offscreen Player** | `offscreen/` | Hidden document hosting the playback iframe driven via postMessage API. |
+| **Playlist Parser** | `popup/playlist-url.js` | Fast regex & URL normalization for YouTube & YouTube Music playlist links. |
+| **Offline Romanizer** | `popup/romanize.js` | Algorithmic Hangul decomposition & compressed Japanese reading dictionary (~130 KB). |
 
-A few details worth knowing:
+---
 
-- **Search and Up next** call the same internal endpoints music.youtube.com uses
-  (`/youtubei/v1/search` and `/youtubei/v1/next`), like other open source YouTube Music clients do.
-- **Request headers.** Extension pages send no `Referer`, and YouTube refuses embeds without one
-  (Error 153). A `declarativeNetRequest` rule adds a `Referer` to embed requests, and sets
-  `Origin`/`Referer` to music.youtube.com for the search requests. Both rules only match requests made by
-  the extension itself.
-- **Songs that can't be embedded** (the owner disallows playback outside YouTube) are skipped
-  automatically.
+## 💻 Development
 
-## Optional: YouTube Data API key
+The extension is written in pure vanilla JavaScript, HTML5, and CSS3 without requiring compilers or heavy bundling tools.
 
-Not needed. If the YouTube Music search ever breaks, you can add a
-[YouTube Data API v3](https://developers.google.com/youtube/v3/getting-started) key in the popup's settings
-(the sliders icon) as a fallback. Fallback results are regular YouTube videos, and each search costs 100 of
-the free 10,000 daily quota units. The key is stored only in your browser.
+### Prerequisites
+- Node.js 22.2+ (for linters and automated packaging)
 
-## Limitations
-
-- **Unofficial API.** YouTube Music's internal API is undocumented and can change at any time, which would
-  break search and Up next until vibing son is updated.
-- **Ads.** Playback goes through the standard YouTube embed, so YouTube may play ads.
-- **Idle player.** The browser closes the hidden player after about 30 seconds without audio (for example a
-  long pause). Pressing play resumes from where you left off.
-- **Firefox** needs autoplay allowed once (see [Install](#firefox-140)), and the package is not signed by
-  Mozilla yet, so it has to be loaded again after each restart.
-- **Lyrics** depend on LRCLIB; not every song has synced lyrics.
-
-## Privacy
-
-vibing son has no servers, no analytics, and no accounts. Your queue, history, and settings stay in your
-browser. See [PRIVACY.md](PRIVACY.md) for exactly what is sent where.
-
-## Development
-
-No build step: the extension is plain HTML, CSS, and JavaScript. Node.js 22.2+ is only needed for the
-tooling.
+### Commands
 
 ```bash
-npm install        # dev tooling (ESLint)
-npm test           # lint + manifest/file checks
-npm run package    # builds dist/vibing-son-<version>.zip and dist/vibing-son-<version>-firefox.zip
+# Install development tooling (ESLint)
+npm install
+
+# Run static checks, ESLint, and unit test suites
+npm test
+
+# Build production zip archives for Chromium & Firefox
+npm run package
 ```
 
-`manifest.json` is the Chromium manifest. The Firefox manifest is generated from it by
-`scripts/package.mjs` (background scripts instead of a service worker, no `offscreen` permission, and the
-add-on id). The JavaScript, HTML, and CSS are the same for both.
+The build script generates production packages under `dist/`:
+- `dist/vibing-son-1.2.0.zip` (Chromium MV3)
+- `dist/vibing-son-1.2.0-firefox.zip` (Firefox MV3)
 
-In Chromium, load the repository folder with **Load unpacked** while developing. In Firefox, run
-`npm run package` and load the `-firefox.zip` from `about:debugging`. See
-[CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
+---
 
-## Disclaimer
+## ⚠️ Notes & Limitations
 
-vibing son is an independent project. It is not affiliated with, endorsed by, or sponsored by YouTube or
-Google. "YouTube" and "YouTube Music" are trademarks of Google LLC. Use vibing son in line with the
-[YouTube Terms of Service](https://www.youtube.com/t/terms).
+- **Unofficial YouTube Music API:** Relies on YouTube Music's internal `WEB_REMIX` client protocol without API keys.
+- **Playback Ads:** Playback is executed through YouTube's official player backend, so occasional advertisements may play based on YouTube policies.
+- **Embedded Playback Restrictions:** Tracks marked by content owners as non-embeddable outside YouTube are automatically skipped to keep queue continuity.
+- **Optional Fallback API Key:** If internal search endpoints are ever blocked by network restrictions, you can provide an optional YouTube Data API v3 key in the settings drawer.
 
-## License
+---
 
-[MIT](LICENSE) © muhamadsyahrulmubarok. Lyrics are provided by [LRCLIB](https://lrclib.net).
+## 📜 License & Acknowledgments
 
-The Japanese reading dictionary, `data/ja-readings.gz`, is derived from the JMdict and KANJIDIC2 files of
-the [Electronic Dictionary Research and Development Group](https://www.edrdg.org/) and is licensed
-[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). See [data/README.md](data/README.md).
+- Licensed under the [MIT License](LICENSE).
+- Lyrics provided via [LRCLIB](https://lrclib.net).
+- Japanese offline reading dictionary (`data/ja-readings.gz`) is derived from JMdict & KANJIDIC2 by the [Electronic Dictionary Research and Development Group](https://www.edrdg.org/) ([CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)).
+- Based on the foundational architecture by [muhamadsyahrulmubarok](https://github.com/muhamadsyahrulmubarok/pocketbeat).

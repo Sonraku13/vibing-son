@@ -434,7 +434,7 @@ async function lrclibSearch(params) {
   const url = new URL("https://lrclib.net/api/search");
   Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
   const res = await fetch(url, {
-    headers: { "Lrclib-Client": `PocketBeat v${APP_VERSION} (https://github.com/muhamadsyahrulmubarok/pocketbeat)` },
+    headers: { "Lrclib-Client": `vibing-son v${APP_VERSION} (https://github.com/Sonraku13/vibing-son)` },
   });
   if (!res.ok) return [];
   const data = await res.json();
