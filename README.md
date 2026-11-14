@@ -10,9 +10,10 @@ A distraction-free, toolbar-first YouTube Music companion for Chrome, Firefox, a
 Search, stream in the background, paste playlist URLs directly, manage your queue, and sing along with synced & offline-romanized lyrics — **without opening a YouTube Music tab, and without an API key**.
 
 <p align="center">
-  <img src="docs/screenshot-search.png" alt="vibing son popup showing song search results while playing" width="250">
-  <img src="docs/screenshot-playlist-search.png" alt="vibing son popup showing YouTube Music playlist search results" width="250">
-  <img src="docs/screenshot-playlists.png" alt="vibing son popup showing the Playlists tab with saved playlists" width="250">
+  <img src="docs/screenshot-search.png" alt="vibing son popup showing song search and player controls" width="220">
+  <img src="docs/screenshot-playlist-search.png" alt="vibing son popup showing 500+ playlist pagination" width="220">
+  <img src="docs/screenshot-lyrics.png" alt="vibing son popup showing synced romanized lyrics" width="220">
+  <img src="docs/screenshot-playlists.png" alt="vibing son popup showing saved local playlists" width="220">
 </p>
 
 ---
